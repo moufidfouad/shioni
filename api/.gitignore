@@ -1,0 +1,7 @@
+node_modules/
+.env
+.env.example
+POSTGRESQL.md
+package-lock.json
+dist
+src/generated/

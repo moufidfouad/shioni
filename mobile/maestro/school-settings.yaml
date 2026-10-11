@@ -1,0 +1,40 @@
+# Itération 89 — voir maestro/README.md pour les limites (non exécuté dans
+# ce bac à sable) et les prérequis. Enchaîne après login.yaml : connexion →
+# première école → lien "Paramètres de l'école" (ADMIN uniquement, voir
+# dashboard.tsx::StaffDashboard) → écran de gestion du logo.
+#
+#   maestro test -e TEST_IDENTIFIER="..." -e TEST_PASSWORD="..." \
+#     maestro/login.yaml maestro/school-settings.yaml
+appId: com.shioni.mobile
+---
+- launchApp
+- tapOn: "Email, numéro d'élève ou CIN"
+- inputText: "${TEST_IDENTIFIER}"
+- tapOn: "Mot de passe"
+- inputText: "${TEST_PASSWORD}"
+- tapOn: "Se connecter"
+- assertVisible: "Bonjour,.*"
+
+# Premier élément de la liste des écoles — nom réel non connu à l'avance
+# (dépend des données du compte de test), même convention que
+# students-browse.yaml.
+- tapOn:
+    text: ".*"
+    index: 0
+
+# Le lien "Paramètres de l'école →" n'est visible QUE pour un compte ADMIN
+# (voir dashboard.tsx::StaffDashboard, même garde que "Voir le personnel →")
+# — si ce compte de test n'a pas ce rôle, cette assertion échoue à raison
+# (comportement voulu, pas un bug : adapter le compte de test utilisé pour
+# couvrir cet écran).
+- assertVisible: "Paramètres de l'école →"
+- tapOn: "Paramètres de l'école →"
+
+# Le badge appareil photo (📷) est TOUJOURS affiché ici (écran entièrement
+# ADMIN-only, contrairement à la fiche élève où il dépend du rôle — voir
+# settings.tsx). Ne va PAS jusqu'au bout du choix caméra/galerie, même
+# limite documentée que students-browse.yaml (pas de fixture image sur
+# l'appareil dans un flow automatisé).
+- assertVisible: "📷"
+- assertVisible: "Directeur"
+- assertVisible: "Devise"

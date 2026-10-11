@@ -1,0 +1,3 @@
+Document de démonstration (jeu de données de seed).
+
+15 équations progressives, méthode de résolution pas à pas, corrigé complet.

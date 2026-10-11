@@ -1,0 +1,55 @@
+# Messagerie de groupe (itération 111) — voir maestro/README.md pour les
+# limites (non exécuté dans ce bac à sable) et les prérequis. Enchaîne après
+# login.yaml : connexion → première école → Messagerie → « Nouvelle
+# conversation → » → onglet « Groupe » → nom du groupe → deux premiers
+# contacts → « Créer le groupe » → vérifie l'arrivée sur le fil de
+# discussion ET que le bouton « Membres » est bien affiché (le créateur
+# devient automatiquement ADMIN côté backend, voir
+# messaging.service.ts::createConversation).
+#
+# Prérequis SUPPLÉMENTAIRE par rapport aux autres flows : au moins DEUX
+# autres membres de l'école (personnel/parent/élève) pour ce compte de test,
+# sinon la sélection de deux contacts échoue à cette étape.
+#
+#   maestro test -e TEST_IDENTIFIER="..." -e TEST_PASSWORD="..." \
+#     maestro/login.yaml maestro/messaging-group.yaml
+appId: com.shioni.mobile
+---
+- launchApp
+- tapOn: "Email, numéro d'élève ou CIN"
+- inputText: "${TEST_IDENTIFIER}"
+- tapOn: "Mot de passe"
+- inputText: "${TEST_PASSWORD}"
+- tapOn: "Se connecter"
+- assertVisible: "Bonjour,.*"
+
+# Premier élément de la liste des écoles — même convention que les autres
+# flows.
+- tapOn:
+    text: ".*"
+    index: 0
+
+- tapOn: "Messagerie →"
+- tapOn: "Nouvelle conversation →"
+- tapOn: "Groupe"
+
+- tapOn: "Nom du groupe"
+- inputText: "Groupe de test Maestro"
+
+# Deux premiers contacts de la liste — noms réels non connus à l'avance
+# (dépendent des données du compte de test), même convention que
+# messaging-attachment.yaml pour la première conversation.
+- tapOn:
+    text: ".*"
+    index: 0
+- tapOn:
+    text: ".*"
+    index: 1
+
+- tapOn: "Créer le groupe.*"
+
+# Arrivée sur le fil de discussion du groupe nouvellement créé — le titre du
+# header devient le nom du groupe saisi plus haut, le bouton "Membres" doit
+# être visible (créateur = ADMIN automatique).
+- assertVisible: "Groupe de test Maestro"
+- assertVisible: "Membres"

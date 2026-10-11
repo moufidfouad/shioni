@@ -1,0 +1,44 @@
+{
+  "expo": {
+    "name": "SHIONI",
+    "slug": "shioni-mobile",
+    "scheme": "shioni",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": false,
+    "plugins": [
+      "expo-router",
+      "expo-notifications",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "SHIONI a besoin d'accéder à vos photos pour définir une photo d'identité.",
+          "cameraPermission": "SHIONI a besoin d'accéder à l'appareil photo pour prendre une photo d'identité."
+        }
+      ]
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.shioni.mobile"
+    },
+    "android": {
+      "package": "com.shioni.mobile",
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

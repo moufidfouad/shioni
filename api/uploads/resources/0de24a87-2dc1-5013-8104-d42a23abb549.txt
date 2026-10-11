@@ -1,0 +1,3 @@
+Document de démonstration (jeu de données de seed).
+
+Définitions, propriétés, exemples et 10 exercices corrigés sur les fractions.

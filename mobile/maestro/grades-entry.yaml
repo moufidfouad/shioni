@@ -1,0 +1,59 @@
+# Phase 4 (itération 81) / Phase 2a saisie (itération 83) — voir
+# maestro/README.md pour les limites (non exécuté dans ce bac à sable) et
+# les prérequis. Enchaîne après login.yaml : connexion → première école →
+# écran Notes → onglet Saisie → première classe → première matière → saisit
+# une évaluation pour le premier élève → enregistre.
+#
+#   maestro test -e TEST_IDENTIFIER="..." -e TEST_PASSWORD="..." \
+#     maestro/login.yaml maestro/grades-entry.yaml
+appId: com.shioni.mobile
+---
+- launchApp
+- tapOn: "Email, numéro d'élève ou CIN"
+- inputText: "${TEST_IDENTIFIER}"
+- tapOn: "Mot de passe"
+- inputText: "${TEST_PASSWORD}"
+- tapOn: "Se connecter"
+- assertVisible: "Bonjour,.*"
+
+# Premier élément de la liste des écoles — nom réel non connu à l'avance
+# (dépend des données du compte de test), même convention que
+# students-browse.yaml/attendance-entry.yaml.
+- tapOn:
+    text: ".*"
+    index: 0
+
+- tapOn: "Voir les notes et classements →"
+
+# L'onglet "Saisie" n'est visible QUE pour un compte ADMIN/GESTION_NOTES/
+# ENSEIGNANT (voir notes.tsx::canWrite) — si ce compte de test n'a aucun de
+# ces rôles sur cette école, cet écran ne montre que le classement et cette
+# assertion échoue à raison (comportement voulu, pas un bug).
+- assertVisible: "Saisie"
+- tapOn: "Saisie"
+
+# Première classe, puis première matière RÉELLEMENT enseignée dans cette
+# classe (le sélecteur de matière ne liste que celles ayant un coefficient
+# pour la classe choisie, voir notes.tsx::GradesEntry) — noms réels non
+# connus à l'avance.
+- tapOn:
+    text: ".*"
+    index: 0
+- tapOn:
+    text: ".*"
+    index: 0
+
+- tapOn: "Libellé (ex. Devoir 1)"
+- inputText: "Test Maestro"
+- tapOn: "Poids (ex. 25)"
+- inputText: "10"
+# "—" est le placeholder de CHAQUE ligne élève tant qu'aucune valeur n'est
+# saisie (voir notes.tsx::StudentGradeRow) — `index: 0` cible la première
+# ligne (premier élève du roster), même convention que les sélecteurs de
+# classe/matière ci-dessus.
+- tapOn:
+    text: "—"
+    index: 0
+- inputText: "15"
+- tapOn: "Enregistrer les notes"
+- assertVisible: "Notes enregistrées."

@@ -1,0 +1,3 @@
+Document de démonstration (jeu de données de seed).
+
+Schémas annotés, vocabulaire clé, questions de révision.

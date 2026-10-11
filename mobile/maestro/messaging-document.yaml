@@ -1,0 +1,50 @@
+# Pièce jointe DOCUMENT en Messagerie (itération 112) — voir maestro/
+# README.md pour les limites (non exécuté dans ce bac à sable) et les
+# prérequis. Enchaîne après login.yaml : connexion → première école →
+# Messagerie → première conversation → bouton 📎 → « Choisir un document » →
+# premier élément proposé par le sélecteur de fichiers du système.
+#
+# LIMITE SUPPLÉMENTAIRE par rapport à messaging-attachment.yaml (galerie
+# photo) : le sélecteur de document natif (Fichiers/Drive sur Android,
+# Fichiers/iCloud sur iOS) a une mise en page BEAUCOUP moins standardisée
+# qu'un simple sélecteur de galerie — l'étape "tap sur le premier élément"
+# ci-dessous est donc la plus fragile de tous les flows de ce projet, à
+# ajuster très probablement selon le fournisseur de stockage réellement
+# ouvert par défaut sur l'appareil/l'émulateur de test.
+#
+# Prérequis SUPPLÉMENTAIRE : au moins une conversation existante ET au moins
+# un fichier (PDF/bureautique) accessible depuis le sélecteur de documents de
+# l'appareil/l'émulateur.
+#
+#   maestro test -e TEST_IDENTIFIER="..." -e TEST_PASSWORD="..." \
+#     maestro/login.yaml maestro/messaging-document.yaml
+appId: com.shioni.mobile
+---
+- launchApp
+- tapOn: "Email, numéro d'élève ou CIN"
+- inputText: "${TEST_IDENTIFIER}"
+- tapOn: "Mot de passe"
+- inputText: "${TEST_PASSWORD}"
+- tapOn: "Se connecter"
+- assertVisible: "Bonjour,.*"
+
+- tapOn:
+    text: ".*"
+    index: 0
+
+- tapOn: "Messagerie →"
+
+- tapOn:
+    text: ".*"
+    index: 0
+
+- tapOn: "📎"
+- tapOn: "Choisir un document"
+- tapOn:
+    text: ".*"
+    index: 0
+
+# Après sélection, une étiquette de pièce jointe tapable (icône 📎 + nom du
+# fichier) doit apparaître dans le fil — pas d'assertion de texte exact
+# (dépend du fichier choisi par le sélecteur), juste la présence de l'icône.
+- assertVisible: "📎.*"

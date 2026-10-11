@@ -1,0 +1,48 @@
+# Phase 4 (itération 81) / pièce jointe Messagerie (itération 85) — voir
+# maestro/README.md pour les limites (non exécuté dans ce bac à sable) et
+# les prérequis. Enchaîne après login.yaml : connexion → première école →
+# Messagerie → première conversation → bouton pièce jointe → galerie →
+# vérifie qu'une image apparaît dans le fil.
+#
+# Prérequis SUPPLÉMENTAIRE par rapport aux autres flows : au moins une
+# conversation existante pour le compte de test, ET au moins une image dans
+# la galerie de l'appareil/l'émulateur (Maestro ne peut pas choisir une
+# image sans qu'il en existe une) — voir la doc Maestro pour y déposer une
+# image de test avant l'exécution.
+#
+#   maestro test -e TEST_IDENTIFIER="..." -e TEST_PASSWORD="..." \
+#     maestro/login.yaml maestro/messaging-attachment.yaml
+appId: com.shioni.mobile
+---
+- launchApp
+- tapOn: "Email, numéro d'élève ou CIN"
+- inputText: "${TEST_IDENTIFIER}"
+- tapOn: "Mot de passe"
+- inputText: "${TEST_PASSWORD}"
+- tapOn: "Se connecter"
+- assertVisible: "Bonjour,.*"
+
+# Premier élément de la liste des écoles — même convention que les autres
+# flows.
+- tapOn:
+    text: ".*"
+    index: 0
+
+- tapOn: "Messagerie →"
+
+# Première conversation de la liste — nom réel non connu à l'avance (dépend
+# des données du compte de test). Si aucune conversation n'existe pour ce
+# compte, ce flow échoue à cette étape (comportement attendu, pas un bug —
+# créer une conversation de test au préalable).
+- tapOn:
+    text: ".*"
+    index: 0
+
+# Bouton 📎 à côté du composeur (voir messaging/[conversationId].tsx) →
+# choix "Choisir depuis la galerie" dans l'Alert natif → première image
+# proposée par le sélecteur de l'OS.
+- tapOn: "📎"
+- tapOn: "Choisir depuis la galerie"
+- tapOn:
+    text: ".*"
+    index: 0

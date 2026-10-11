@@ -1,0 +1,3 @@
+Document de démonstration (jeu de données de seed).
+
+15 phrases à compléter, rappel de règle, corrigé.

@@ -1,0 +1,55 @@
+# Phase 4 (itération 81) / Phase 2b saisie (itération 83) — voir
+# maestro/README.md pour les limites (non exécuté dans ce bac à sable) et
+# les prérequis. Enchaîne après login.yaml : connexion → première école →
+# écran Présences → onglet Saisie → première classe → marque le premier
+# élève Absent → enregistre.
+#
+#   maestro test -e TEST_IDENTIFIER="..." -e TEST_PASSWORD="..." \
+#     maestro/login.yaml maestro/attendance-entry.yaml
+appId: com.shioni.mobile
+---
+- launchApp
+- tapOn: "Email, numéro d'élève ou CIN"
+- inputText: "${TEST_IDENTIFIER}"
+- tapOn: "Mot de passe"
+- inputText: "${TEST_PASSWORD}"
+- tapOn: "Se connecter"
+- assertVisible: "Bonjour,.*"
+
+# Premier élément de la liste des écoles — nom réel non connu à l'avance
+# (dépend des données du compte de test), même convention que
+# students-browse.yaml.
+- tapOn:
+    text: ".*"
+    index: 0
+
+- tapOn: "Voir les présences →"
+
+# L'onglet "Saisie" n'est visible QUE pour un compte ADMIN/GESTION_ELEVES/
+# ENSEIGNANT (voir attendance.tsx::canWrite) — si ce compte de test n'a
+# aucun de ces rôles sur cette école, cet écran ne montre que le
+# récapitulatif et cette assertion échoue à raison (comportement voulu, pas
+# un bug : adapter le compte de test utilisé pour couvrir la saisie).
+- assertVisible: "Saisie"
+- tapOn: "Saisie"
+
+# Première classe de la liste — nom réel non connu à l'avance (dépend de la
+# structure pédagogique du compte de test).
+- tapOn:
+    text: ".*"
+    index: 0
+
+# Chaque ligne élève propose trois statuts ; "Absent" est le dernier des
+# trois chips (voir attendance.tsx::STATUS_OPTIONS) — on marque le premier
+# élève de la classe absent, avec un motif, puis on enregistre. Le bouton
+# "Aujourd'hui" n'apparaît que si la date affichée n'est PAS déjà aujourd'hui
+# (l'écran s'ouvre sur le jour courant par défaut, voir
+# attendance.tsx::AttendanceEntry) — pas d'assertion dessus ici.
+- assertVisible: "Enregistrer les présences"
+- tapOn:
+    text: "Absent"
+    index: 0
+- tapOn: "Motif (facultatif)"
+- inputText: "Test Maestro — non exécuté réellement"
+- tapOn: "Enregistrer les présences"
+- assertVisible: "Présences enregistrées."

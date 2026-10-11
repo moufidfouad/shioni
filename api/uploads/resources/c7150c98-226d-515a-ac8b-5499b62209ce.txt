@@ -1,0 +1,3 @@
+Document de démonstration (jeu de données de seed).
+
+Liste de vocabulaire, structures types, dialogue d'exemple.

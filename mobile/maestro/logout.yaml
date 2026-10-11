@@ -1,0 +1,22 @@
+# Phase 4 (itération 81) — voir maestro/README.md. Enchaîne après login.yaml.
+#
+#   maestro test -e TEST_IDENTIFIER="..." -e TEST_PASSWORD="..." \
+#     maestro/login.yaml maestro/logout.yaml
+appId: com.shioni.mobile
+---
+- launchApp
+- tapOn: "Email, numéro d'élève ou CIN"
+- inputText: "${TEST_IDENTIFIER}"
+- tapOn: "Mot de passe"
+- inputText: "${TEST_PASSWORD}"
+- tapOn: "Se connecter"
+- assertVisible: "Bonjour,.*"
+
+# app/(app)/schools/index.tsx::logout — désenregistre aussi le jeton push
+# de cet appareil (authStore.ts::logout, itération 78) avant d'effacer la
+# session ; ce flow ne peut pas vérifier CETTE partie (pas de backend
+# accessible pour interroger PushToken), seulement le résultat visible :
+# retour à l'écran de connexion.
+- tapOn: "Déconnexion"
+- assertVisible: "Connexion"
+- assertNotVisible: "Bonjour,.*"

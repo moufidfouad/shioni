@@ -1,0 +1,3 @@
+Document de démonstration (jeu de données de seed).
+
+2 textes authentiques, questions de compréhension, corrigé détaillé.

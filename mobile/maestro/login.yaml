@@ -1,0 +1,18 @@
+# Phase 4 (itération 81) — voir maestro/README.md pour les limites
+# (non exécuté dans ce bac à sable) et les prérequis.
+#
+# Identifiants d'un compte de test réel, à fournir à l'exécution :
+#   maestro test -e TEST_IDENTIFIER="..." -e TEST_PASSWORD="..." maestro/login.yaml
+appId: com.shioni.mobile
+---
+- launchApp
+- assertVisible: "SHIONI"
+- assertVisible: "Connexion"
+- tapOn: "Email, numéro d'élève ou CIN"
+- inputText: "${TEST_IDENTIFIER}"
+- tapOn: "Mot de passe"
+- inputText: "${TEST_PASSWORD}"
+- tapOn: "Se connecter"
+# Après connexion réussie : liste des écoles (app/(app)/schools/index.tsx),
+# "Bonjour, <prénom>" est le premier texte propre à cet écran.
+- assertVisible: "Bonjour,.*"

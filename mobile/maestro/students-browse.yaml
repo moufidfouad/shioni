@@ -1,0 +1,51 @@
+# Phase 4 (itération 81) — voir maestro/README.md pour les limites
+# (non exécuté dans ce bac à sable) et les prérequis. Enchaîne après
+# login.yaml : connexion → première école de la liste → onglet Élèves →
+# filtre "Filles" (itération 88) → première fiche → vérifie que le bouton
+# photo éditable (Phase 3c, itération 80) est bien affiché pour ce compte.
+#
+#   maestro test -e TEST_IDENTIFIER="..." -e TEST_PASSWORD="..." \
+#     maestro/login.yaml maestro/students-browse.yaml
+appId: com.shioni.mobile
+---
+- launchApp
+- tapOn: "Email, numéro d'élève ou CIN"
+- inputText: "${TEST_IDENTIFIER}"
+- tapOn: "Mot de passe"
+- inputText: "${TEST_PASSWORD}"
+- tapOn: "Se connecter"
+- assertVisible: "Bonjour,.*"
+
+# Premier élément de la liste des écoles — nom réel non connu à l'avance
+# (dépend des données du compte de test), d'où l'usage de `index` plutôt
+# qu'un texte exact (voir app/(app)/schools/index.tsx::cardTitle).
+- tapOn:
+    text: ".*"
+    index: 0
+
+# Navigation vers Élèves depuis le lien du Tableau de bord — pas d'onglet
+# direct au niveau [schoolId] (Élèves est déclaré `href: null` dans les
+# Tabs introduits à l'itération 91, voir [schoolId]/_layout.tsx : atteint
+# depuis le Tableau de bord comme avant, jamais affiché dans la barre) —
+# libellé exact de dashboard.tsx::notesLinkText.
+- tapOn: "Voir les élèves →"
+- assertVisible: "Rechercher un élève…"
+
+# Filtre sexe (itération 88) — "Filles" puis retour à "Tous" pour ne pas
+# fausser la sélection "première fiche" ci-dessous (dépendrait sinon de
+# l'école de test ayant au moins une élève).
+- tapOn: "Filles"
+- tapOn: "Tous"
+
+# Première fiche élève de la liste.
+- tapOn:
+    text: ".*"
+    index: 0
+
+# Bouton photo éditable (Phase 3c, itération 80) — badge appareil photo sur
+# la vignette, visible SEULEMENT si le compte de test a le rôle ADMIN ou
+# GESTION_ELEVES sur cette école (voir students/[studentId].tsx). Si ce
+# compte de test est un compte ENSEIGNANT, cette dernière assertion échouera
+# à raison (comportement volontaire, pas un bug) — adapter le compte de
+# test utilisé si l'objectif est de couvrir le cas éditable.
+- assertVisible: "📷"

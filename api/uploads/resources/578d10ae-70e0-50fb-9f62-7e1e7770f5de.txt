@@ -1,0 +1,3 @@
+Document de démonstration (jeu de données de seed).
+
+Exercices de repérage et d'échelle, corrigé, lexique cartographique.

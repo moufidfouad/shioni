@@ -1,0 +1,6 @@
+/* Itération 90 — NativeWind. Importé une seule fois, à la racine
+   (app/_layout.tsx) — voir le commentaire de tailwind.config.js pour le
+   choix du design system. */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

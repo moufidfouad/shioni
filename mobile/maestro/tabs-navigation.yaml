@@ -1,0 +1,51 @@
+# Itération 90 — voir maestro/README.md pour les limites (non exécuté dans
+# ce bac à sable) et les prérequis. Enchaîne après login.yaml : connexion →
+# première école → vérifie que la barre d'onglets (Tableau de bord / Notes
+# / Présences / Messagerie, voir _layout.tsx) est bien affichée pour un
+# compte PERSONNEL, puis navigue entre deux onglets.
+#
+#   maestro test -e TEST_IDENTIFIER="..." -e TEST_PASSWORD="..." \
+#     maestro/login.yaml maestro/tabs-navigation.yaml
+appId: com.shioni.mobile
+---
+- launchApp
+- tapOn: "Email, numéro d'élève ou CIN"
+- inputText: "${TEST_IDENTIFIER}"
+- tapOn: "Mot de passe"
+- inputText: "${TEST_PASSWORD}"
+- tapOn: "Se connecter"
+- assertVisible: "Bonjour,.*"
+
+# Premier élément de la liste des écoles — nom réel non connu à l'avance
+# (dépend des données du compte de test), même convention que
+# students-browse.yaml.
+- tapOn:
+    text: ".*"
+    index: 0
+
+# Les 4 onglets ne sont affichés QUE pour un compte PERSONNEL (voir
+# _layout.tsx::isStaff) — un compte Parent/Élève de test ferait échouer
+# cette assertion à raison (comportement voulu, pas un bug : la navigation
+# de ces deux profils reste inchangée, un simple Stack sans barre
+# d'onglets). Libellé de l'onglet Accueil (`tabBarLabel`) distinct de son
+# titre d'en-tête ("Tableau de bord") — voir _layout.tsx.
+- assertVisible: "Accueil"
+- assertVisible: "Notes"
+- assertVisible: "Présences"
+- assertVisible: "Messagerie"
+
+- tapOn: "Notes"
+- assertVisible: "Classement"
+- tapOn: "Présences"
+- assertVisible: "Récapitulatif"
+- tapOn: "Accueil"
+- assertVisible: "Voir les présences →"
+
+# Note : les libellés "Classement"/"Récapitulatif" ci-dessus sont les
+# boutons de bascule Saisie/Classement (notes.tsx) et Saisie/Récapitulatif
+# (attendance.tsx), affichés SEULEMENT pour un compte ADMIN/GESTION_*/
+# ENSEIGNANT (`canWrite`, voir attendance-entry.yaml/grades-entry.yaml pour
+# la même réserve) — si ce compte de test n'a aucun de ces rôles, ces deux
+# boutons n'existent pas et ces deux assertions échouent à raison (pas un
+# bug de la barre d'onglets elle-même, qui reste, elle, indépendante du
+# rôle précis au sein du Personnel).
